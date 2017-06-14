@@ -1,0 +1,6 @@
+program PROG1;
+deffunc
+ array1 = 23 \ 32, 53;
+
+begin
+end.
