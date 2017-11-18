@@ -1,5 +1,10 @@
+"""
+    @file lex_analyzer.py
+    @brief Implement of lexical analyzer
+    @author Alexandr Ivanov (alexandr.ivanov.1995@gmail.com)
+"""
+
 from tab import Tab
-__author__ = 'alexandr'
 
 error_list = []
 result = []
@@ -18,7 +23,6 @@ def error(type_error, char=0):
 
 def type_chr(char, file_program):
     if char in (32, 9, 10):
-
         return 0
     elif char in range(65, 91) or char in range(97, 123):
         return 1
@@ -50,13 +54,12 @@ def identificator(lex):
     global result
     if lex in Tab.direction_tab.keys():
         result.append(Tab.direction_tab.get(lex))
-    elif lex in Tab.identificator_tab.keys():
-        result.append(Tab.identificator_tab[lex])
+    elif lex in Tab.identifier_tab.keys():
+        result.append(Tab.identifier_tab[lex])
     else:
-        code = 1001 + len(Tab.identificator_tab)
-        Tab.identificator_tab[lex] = code
+        code = 1001 + len(Tab.identifier_tab)
+        Tab.identifier_tab[lex] = code
         result.append(code)
-
 
 
 def number(lex):
@@ -75,7 +78,6 @@ def delimiter(lex):
 
 
 def get_identificator(lex, file_program):
-    next_char = ' '
     global flag_row
     while 1:
         char = file_program.read(1)
@@ -89,11 +91,11 @@ def get_identificator(lex, file_program):
         else:
             next_char = char
             break
+
     return lex, next_char
 
 
 def get_number(lex, file_program):
-    next_char = ' '
     global flag_row
     while 1:
         char = file_program.read(1)
@@ -168,7 +170,7 @@ def lex_analyzer(file_name):
         if ord(next_character) in Tab.delimiter_tab:
             add_lexem(next_character, 3)
 
-        if flag_row == True:
+        if flag_row:
             flag_row = False
             result.append('\n')
             row += 1
@@ -177,7 +179,7 @@ def lex_analyzer(file_name):
     result.append('#')
     if len(error_list) is 0:
         print("Direction: ", Tab.direction_tab)
-        print("Identificator: ", Tab.identificator_tab)
+        print("Identificator: ", Tab.identifier_tab)
         print("Number: ", Tab.constant_tab)
         print("Result: ", result)
     else:
@@ -185,9 +187,9 @@ def lex_analyzer(file_name):
             return err, 1
 
     sub_dict = {}
-    for key, value in Tab.identificator_tab.items():
+    for key, value in Tab.identifier_tab.items():
         sub_dict[value] = key
-    Tab.identificator_tab = sub_dict
+    Tab.identifier_tab = sub_dict
 
     sub_dict = {}
     for key, value in Tab.constant_tab.items():

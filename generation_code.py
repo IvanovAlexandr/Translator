@@ -1,16 +1,18 @@
+"""
+    @file generation_code.py
+    @brief Implement of generator of code
+    @author Alexandr Ivanov (alexandr.ivanov.1995@gmail.com)
+"""
+
 from tab import Tab
-__author__ = 'alexandr'
-
-
 
 
 def generation_code(tree):
-    error = ""
     list_ident = []
     code = ''
     data = ''
     tree = tree[1][0][1]
-    name = Tab.identificator_tab.get(tree[0][1][0])
+    name = Tab.identifier_tab.get(tree[0][1][0])
     code += '@' + name + ':\n'
     list_ident.append(tree[0][1][0])
     tree = tree[1][1]
@@ -26,15 +28,17 @@ def generation_code(tree):
 
                 tree3 = tree3[1][0][1]
 
-                ident = Tab.identificator_tab.get(tree3[0][1][0])
+                ident = Tab.identifier_tab.get(tree3[0][1][0])
                 if ident in list_ident:
-                    error = "SEMANTIC ERROR in line " + str(row) + " : identifier '" + ident + "' is already being used"
+                    error = "SEMANTIC ERROR in line " + str(row) + " : identifier '" \
+                            + ident + "' is already being used"
                     return [error, row], 1
                 list_ident.append(ident)
                 data += "  " + ident
                 cons = int(Tab.constant_tab.get(tree3[1][1][0]))
                 if cons > 4294967295:
-                    error = "SEMANTIC ERROR in line " + str(row) + " : " + str(Tab.constant_tab.get(tree3[1][1][0])) + " not unsigned integer"
+                    error = "SEMANTIC ERROR in line " + str(row) + " : " \
+                            + str(Tab.constant_tab.get(tree3[1][1][0])) + " not unsigned integer"
                     return [error, row], 1
                 if cons > 65536:
                     reg = "ebx"
@@ -48,10 +52,12 @@ def generation_code(tree):
                 n2 = int(Tab.constant_tab.get(tree3[1]))
 
                 if n1 > 65536:
-                    error = "SEMANTIC ERROR in line " + str(row) + " : " + str(Tab.constant_tab.get(tree3[0])) + " not unsigned integer"
+                    error = "SEMANTIC ERROR in line " + str(row) + " : " \
+                            + str(Tab.constant_tab.get(tree3[0])) + " not unsigned integer"
                     return [error, row], 1
                 if n2 > 65536:
-                    error = "SEMANTIC ERROR in line " + str(row) + " : " + str(Tab.constant_tab.get(tree3[1])) + " not unsigned integer in"
+                    error = "SEMANTIC ERROR in line " + str(row) + " : " \
+                            + str(Tab.constant_tab.get(tree3[1])) + " not unsigned integer in"
                     return [error, row], 1
                 if n2 < n1:
                     error = "SEMANTIC ERROR in line " + str(row) + " : " + str(Tab.constant_tab.get(tree3[1])) \
@@ -68,21 +74,12 @@ def generation_code(tree):
                 code += "  loop @loop_" + ident + "\n"
                 tree2 = tree2[1][1]
                 tree3 = tree2
-                row +=1
+                row += 1
                 if tree3 == (7, 2):
                     break
 
     code += "  nop\n"
     code += "end @" + name
 
-
-    """
-    print("\n")
-    print(".data")
-    print(data)
-    print(".code")
-    print(code)
-    """
     result = ".data\n" + data + "\n.code\n" + code
     return result, 0
-
